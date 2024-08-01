@@ -86,35 +86,10 @@ After finding the contours, each contour is processed to identify the shape. Her
         ```
         - `len(approx) > 6` checks if the contour has more than 6 vertices, indicating a circle.
 
-### Display the Frames
+## Contributing
 
-1. **Display the original frame with detected shapes**:
-    ```python
-    cv2.imshow("Frame", frame)
-    ```
-    - The `cv2.imshow("Frame", frame)` function shows the original video frame with detected shapes and labels.
+If you have ideas for improvements or want to contribute to this project, feel free to fork the repository and submit a pull request. Contributions are welcome and appreciated!
 
-2. **Display the mask frame**:
-    ```python
-    cv2.imshow("Mask", mask)
-    ```
-    - The `cv2.imshow("Mask", mask)` function shows the binary mask frame.
+## License
 
-### Exit
-
-1. **Break the loop when 'q' is pressed**:
-    ```python
-    if cv2.waitKey(3) & 0xFF == ord("q"):
-        break
-    ```
-    - The loop breaks and exits the program when the 'q' key is pressed.
-
-### Cleanup
-
-1. **Release the video capture object and destroy all windows**:
-    ```python
-    cap.release()
-    cv2.destroyAllWindows()
-    ```
-    - The `cap.release()` function releases the webcam.
-    - The `cv2.destroyAllWindows()` function closes all OpenCV windows.
+This project is licensed under the MIT License.
