@@ -14,7 +14,7 @@ First, make sure you have Python and pip installed. Then, install the required l
 
 ```bash
 pip install opencv-python numpy
-
+````
 ## Processing the Contours
 
 After finding the contours, each contour is processed to identify the shape. Here are the detailed steps:
