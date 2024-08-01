@@ -15,6 +15,65 @@ First, make sure you have Python and pip installed. Then, install the required l
 ```bash
 pip install opencv-python numpy
 ````
+
+## Processing the Frame Before Contour Detection
+
+Before detecting contours, the frame undergoes several preprocessing steps to isolate the shapes based on the specified color range. Here's a detailed explanation of these steps:
+
+1. **Capture the Frame**:
+    ```python
+    ret, frame = cap.read()
+    frame = cv2.flip(frame, 1)
+    ```
+    - `ret, frame = cap.read()`: Captures a frame from the webcam.
+    - `frame = cv2.flip(frame, 1)`: Flips the frame horizontally for a mirror effect.
+
+2. **Retrieve Trackbar Positions**:
+    ```python
+    lower_h = cv2.getTrackbarPos("Lower-Hue", "Settings")
+    lower_s = cv2.getTrackbarPos("Lower-Saturation", "Settings")
+    lower_v = cv2.getTrackbarPos("Lower-Value", "Settings")
+    upper_h = cv2.getTrackbarPos("Upper-Hue", "Settings")
+    upper_s = cv2.getTrackbarPos("Upper-Saturation", "Settings")
+    upper_v = cv2.getTrackbarPos("Upper-Value", "Settings")
+    ```
+    - Retrieves the current positions of the trackbars for the lower and upper HSV values.
+
+3. **Define Lower and Upper Color Range**:
+    ```python
+    lower_color = np.array([lower_h, lower_s, lower_v])
+    upper_color = np.array([upper_h, upper_s, upper_v])
+    ```
+    - `lower_color` and `upper_color` are defined as NumPy arrays using the values obtained from the trackbars.
+
+4. **Convert the Frame to HSV Color Space**:
+    ```python
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    ```
+    - `hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)`: Converts the frame from BGR to HSV color space, which is better for color segmentation.
+
+5. **Create a Mask**:
+    ```python
+    mask = cv2.inRange(hsv, lower_color, upper_color)
+    ```
+    - `mask = cv2.inRange(hsv, lower_color, upper_color)`: Creates a binary mask where the pixels within the specified HSV range are white, and all other pixels are black.
+
+6. **Apply Morphological Transformations**:
+    ```python
+    kernel = np.ones((5, 5), np.uint8)
+    mask = cv2.erode(mask, kernel)
+    ```
+    - `kernel = np.ones((5, 5), np.uint8)`: Creates a 5x5 kernel of ones for morphological operations.
+    - `mask = cv2.erode(mask, kernel)`: Applies erosion to the mask to remove small white noise. This operation helps to clean up the mask by eroding the boundaries of the white regions.
+
+7. **Find Contours**:
+    ```python
+    contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    ```
+    - `contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)`: Finds contours in the mask. `cv2.RETR_TREE` retrieves all the contours and reconstructs a full hierarchy of nested contours. `cv2.CHAIN_APPROX_SIMPLE` compresses horizontal, vertical, and diagonal segments and leaves only their end points.
+
+By following these preprocessing steps, the script effectively isolates shapes based on their color, making it easier to detect and analyze contours in the subsequent steps.
+
 ## Processing the Contours
 
 After finding the contours, each contour is processed to identify the shape. Here are the detailed steps:
